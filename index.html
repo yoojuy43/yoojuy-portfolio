@@ -8,6 +8,60 @@
     <script src="./support.js"></script>
   </head>
   <body>
+    <!-- ============================
+     SPLASH OVERLAY
+     ============================ -->
+    <div id="splash-overlay" class="splash-overlay" role="dialog" aria-label="스플래시 화면">
+      <!-- 배경 블롭 -->
+      <div class="splash-blob-a" aria-hidden="true"></div>
+      <div class="splash-blob-b" aria-hidden="true"></div>
+      <!-- 플로팅 딸기 -->
+      <span class="splash-deco splash-deco-1" aria-hidden="true">🍓</span>
+      <span class="splash-deco splash-deco-2" aria-hidden="true">🍓</span>
+      <span class="splash-deco splash-deco-3" aria-hidden="true">🍓</span>
+      <span class="splash-deco splash-deco-4" aria-hidden="true">🍓</span>
+      <span class="splash-deco splash-deco-5" aria-hidden="true">✨</span>
+      <span class="splash-deco splash-deco-6" aria-hidden="true">💕</span>
+      <!-- 딸기씨 점 -->
+      <span class="splash-seed splash-seed-1" aria-hidden="true"></span>
+      <span class="splash-seed splash-seed-2" aria-hidden="true"></span>
+      <span class="splash-seed splash-seed-3" aria-hidden="true"></span>
+      <span class="splash-seed splash-seed-4" aria-hidden="true"></span>
+      <span class="splash-seed splash-seed-5" aria-hidden="true"></span>
+      <span class="splash-seed splash-seed-6" aria-hidden="true"></span>
+      <!-- 중앙 콘텐츠 -->
+      <div class="splash-content">
+        <span class="splash-emoji">🍓</span>
+        <p class="splash-name">유주연 디자이너</p>
+        <p class="splash-tagline">
+          하나의 딸기 속 수많은 씨앗처럼,<br />
+          수많은 경험의 씨앗들이 모여 오늘의 저라는 하나의 딸기를 만들었습니다
+        </p>
+      </div>
+      <button class="splash-skip" onclick="dismissSplash()">Skip ✕</button>
+      <!-- 딸기가 달리는 프로그레스 바 -->
+      <div class="splash-progress-wrap" aria-hidden="true">
+        <div class="splash-progress-bar"></div>
+      </div>
+    </div>
+    <script>
+      (function () {
+        var overlay = document.getElementById("splash-overlay");
+        function dismissSplash() {
+          if (!overlay) return;
+          overlay.style.animation = "splashOut 0.55s cubic-bezier(0.4,0,0.2,1) forwards";
+          setTimeout(function () { overlay.remove(); }, 560);
+        }
+        window.dismissSplash = dismissSplash;
+        if (sessionStorage.getItem("splashSeen")) {
+          overlay.remove();
+          return;
+        }
+        sessionStorage.setItem("splashSeen", "1");
+        setTimeout(dismissSplash, 2500);
+      })();
+    </script>
+
     <x-dc>
       <helmet>
         <title>유주연 포트폴리오 | UX/UI 디자이너</title>
@@ -258,8 +312,8 @@
                       </sc-for>
                     </div>
                     <div class="postit-footer">
-                      <span class="postit-category">{{ sp.category }}</span>
-                      <span class="postit-year">{{ sp.year }}</span>
+                      <span class="postit-titlee">보러가기</span>
+                      <span class="postit-titlee">>></span>
                     </div>
                   </div>
                 </div>
@@ -364,6 +418,16 @@
                 </sc-for>
               </div>
               <div class="projects-pagination"></div>
+            </div>
+
+            <!-- 프로젝트 더보기 버튼 -->
+            <div class="more-btn-wrap">
+              <button
+                onClick="{{ openMasonry }}"
+                class="more-btn"
+                style="background:{{ accent }};"
+                style-hover="transform:translateY(-4px) scale(1.05);box-shadow:0 16px 36px rgba(255,77,141,.45);"
+              >프로젝트 더보기 🍓</button>
             </div>
           </div>
         </section>
@@ -708,6 +772,52 @@
             </div>
           </div>
         </section>
+
+        <!-- ============================
+         MASONRY OVERLAY  (프로젝트 더보기)
+         ============================ -->
+        <sc-if value="{{ masonryOpen }}" hint-placeholder-val="{{ false }}">
+          <div
+            class="masonry-overlay"
+            style="animation:{{ backdropMasonryAnim }};"
+            onClick="{{ closeMasonry }}"
+            aria-label="프로젝트 전체 이미지"
+          >
+            <div
+              class="masonry-panel"
+              style="animation:{{ masonryAnim }};"
+              onClick="{{ stop }}"
+            >
+              <!-- 헤더 -->
+              <div class="masonry-panel-header">
+                <div>
+                  <span class="masonry-panel-label">{{ masonryTabLabel }}</span>
+                  <h3 class="masonry-panel-title">딸기씨 이미지 컬렉션 🍓</h3>
+                </div>
+                <button
+                  onClick="{{ closeMasonry }}"
+                  aria-label="닫기"
+                  class="masonry-close-btn"
+                  style-hover="transform:rotate(90deg) scale(1.1);"
+                >✕</button>
+              </div>
+              <!-- 마소닉 그리드 -->
+              <div class="masonry-grid">
+                <sc-for list="{{ masonryImages }}" as="mimg" hint-placeholder-count="6">
+                  <div class="masonry-item" style-hover="transform:translateY(-6px);box-shadow:0 16px 36px rgba(255,77,141,.22);">
+                    <span class="masonry-category">{{ mimg.category }}</span>
+                    <img
+                      src="{{ mimg.src }}"
+                      alt="{{ mimg.alt }}"
+                      loading="lazy"
+                      class="masonry-img"
+                    />
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </div>
+        </sc-if>
 
         <!-- ============================
          MODAL  (프로젝트 상세 팝업)

@@ -64,8 +64,8 @@
   function onWheel(e) {
     if (!isDesktop()) return;
 
-    // 모달(프로젝트 상세 팝업)이 열려 있으면 원스크롤 가로채기 중단 → 내부 스크롤 허용
-    if (document.querySelector('.modal-backdrop')) return;
+    // 모달 또는 마소닉 오버레이가 열려 있으면 원스크롤 가로채기 중단 → 내부 스크롤 허용
+    if (document.querySelector('.modal-backdrop') || document.querySelector('.masonry-overlay')) return;
 
     var secs = getSections();
 
@@ -118,8 +118,8 @@
   function onKeyDown(e) {
     if (!isDesktop()) return;
     if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
-    // 모달이 열려 있으면 키보드 이동도 중단
-    if (document.querySelector('.modal-backdrop')) return;
+    // 모달 또는 마소닉 오버레이가 열려 있으면 키보드 이동도 중단
+    if (document.querySelector('.modal-backdrop') || document.querySelector('.masonry-overlay')) return;
     if (busy) return;
     refreshIdx(); // 현재 위치로 동기화 후 이동
     if (e.key === 'ArrowDown' || e.key === 'PageDown') { e.preventDefault(); goTo(activeIdx + 1); }
